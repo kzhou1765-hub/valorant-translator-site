@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏翻译助手 - 实时语音翻译 | 游戏必备神器</title>
+    <meta name="description" content="游戏翻译助手是一款专业的游戏实时语音翻译工具，支持本地离线翻译、AI翻译、截图OCR翻译、PTT语音翻译，助你畅玩国际服游戏。">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #0f0f1a; color: #e0e0e0; line-height: 1.6; overflow-x: hidden;
+        }
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(15,15,26,0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,212,170,0.2); z-index: 1000; padding: 15px 0;
+        }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: bold; color: #00d4aa; display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg,#00d4aa,#00b4d8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { color: #a0a0b0; text-decoration: none; font-size: 15px; transition: color 0.3s; }
+        .nav-links a:hover { color: #00d4aa; }
+        .nav-download-btn { background: linear-gradient(135deg,#00d4aa,#00b4d8); color: #0f0f1a !important; padding: 8px 20px; border-radius: 8px; font-weight: bold; transition: transform 0.3s,box-shadow 0.3s; }
+        .nav-download-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,212,170,0.4); }
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 120px 20px 80px; position: relative;
+            background: radial-gradient(ellipse at center, rgba(0,212,170,0.1) 0%, transparent 70%);
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 800px; }
+        .hero-badge { display: inline-block; background: rgba(0,212,170,0.15); color: #00d4aa; padding: 6px 16px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; border: 1px solid rgba(0,212,170,0.3); }
+        .hero h1 { font-size: 56px; font-weight: bold; margin-bottom: 20px; background: linear-gradient(135deg,#ffffff 0%,#00d4aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-subtitle { font-size: 20px; color: #a0a0b0; margin-bottom: 40px; line-height: 1.8; }
+        .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: linear-gradient(135deg,#00d4aa,#00b4d8); color: #0f0f1a; padding: 16px 40px; border-radius: 12px; font-size: 18px; font-weight: bold; text-decoration: none; transition: transform 0.3s,box-shadow 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,212,170,0.4); }
+        .btn-secondary { background: transparent; color: #00d4aa; padding: 16px 40px; border-radius: 12px; font-size: 18px; font-weight: bold; text-decoration: none; border: 2px solid #00d4aa; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-secondary:hover { background: rgba(0,212,170,0.1); transform: translateY(-3px); }
+        .hero-version { margin-top: 30px; color: #606266; font-size: 14px; }
+        .features { padding: 100px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 36px; font-weight: bold; margin-bottom: 15px; color: #ffffff; }
+        .section-subtitle { text-align: center; color: #a0a0b0; font-size: 18px; margin-bottom: 60px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 30px; }
+        .feature-card { background: linear-gradient(135deg,rgba(26,26,46,0.8),rgba(22,33,62,0.8)); border: 1px solid rgba(0,212,170,0.15); border-radius: 16px; padding: 35px; transition: transform 0.3s,border-color 0.3s,box-shadow 0.3s; }
+        .feature-card:hover { transform: translateY(-5px); border-color: rgba(0,212,170,0.5); box-shadow: 0 10px 40px rgba(0,212,170,0.15); }
+        .feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg,rgba(0,212,170,0.2),rgba(0,180,216,0.2)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
+        .feature-card h3 { font-size: 22px; color: #ffffff; margin-bottom: 12px; }
+        .feature-card p { color: #a0a0b0; font-size: 15px; line-height: 1.7; }
+        .download-section { padding: 100px 20px; background: linear-gradient(180deg,transparent,rgba(0,212,170,0.05),transparent); }
+        .download-container { max-width: 800px; margin: 0 auto; text-align: center; }
+        .download-card { background: linear-gradient(135deg,rgba(26,26,46,0.9),rgba(22,33,62,0.9)); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; padding: 50px; margin-top: 40px; }
+        .download-info { display: flex; justify-content: center; gap: 40px; margin: 30px 0; flex-wrap: wrap; }
+        .download-info-item { text-align: center; }
+        .download-info-item .label { color: #606266; font-size: 14px; margin-bottom: 5px; }
+        .download-info-item .value { color: #00d4aa; font-size: 18px; font-weight: bold; }
+        .download-note { color: #888; font-size: 14px; margin-top: 25px; line-height: 1.8; }
+        .contact-section { padding: 80px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
+        .contact-card { background: linear-gradient(135deg,rgba(26,26,46,0.8),rgba(22,33,62,0.8)); border: 1px solid rgba(0,212,170,0.2); border-radius: 16px; padding: 40px; margin-top: 30px; }
+        .contact-item { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 15px 0; font-size: 18px; }
+        .contact-item .icon { font-size: 24px; }
+        .contact-item .label { color: #a0a0b0; }
+        .contact-item .value { color: #00d4aa; font-weight: bold; }
+        .footer { background: #0a0a14; padding: 40px 20px; text-align: center; border-top: 1px solid rgba(0,212,170,0.1); }
+        .footer p { color: #606266; font-size: 14px; line-height: 1.8; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero-subtitle { font-size: 16px; }
+            .nav-links { display: none; }
+            .section-title { font-size: 28px; }
+            .download-card { padding: 30px 20px; }
+            .download-info { gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><div class="logo-icon">🎮</div><span>游戏翻译助手</span></div>
+            <ul class="nav-links">
+                <li><a href="#features">功能特色</a></li>
+                <li><a href="#download">立即下载</a></li>
+                <li><a href="#contact">联系我们</a></li>
+                <li><a href="#download" class="nav-download-btn">下载</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🔥 畅玩国际服必备神器</div>
+            <h1>游戏翻译助手</h1>
+            <p class="hero-subtitle">专业的游戏实时语音翻译工具<br>支持本地离线翻译、AI翻译、截图OCR翻译、PTT语音翻译<br>隐私安全，不上传音频，助你畅玩 VALORANT、CS2、APEX 等国际服游戏</p>
+            <div class="hero-buttons">
+                <a href="#download" class="btn-primary">⬇️ 立即下载</a>
+                <a href="#features" class="btn-secondary">了解更多</a>
+            </div>
+            <p class="hero-version">当前版本 v2.5.5 · Windows 10/11</p>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2 class="section-title">强大功能，应有尽有</h2>
+        <p class="section-subtitle">专为游戏玩家打造的翻译工具，覆盖所有翻译场景</p>
+        <div class="features-grid">
+            <div class="feature-card"><div class="feature-icon">🎙️</div><h3>实时语音翻译</h3><p>WASAPI 环回音频捕获，VAD 语音检测优化，自动识别游戏内语音并实时翻译，字幕悬浮显示，不影响游戏操作。</p></div>
+            <div class="feature-card"><div class="feature-icon">🔤</div><h3>本地离线翻译</h3><p>支持 OPUS-MT、M2M100、NLLB、Qwen2 等多种本地模型，无需联网即可翻译，隐私安全，速度快，CPU 友好。</p></div>
+            <div class="feature-card"><div class="feature-icon">🤖</div><h3>AI 翻译引擎</h3><p>支持通义千问、豆包、文心一言等主流 AI 翻译引擎，翻译质量更高，支持自定义 API Key，灵活切换。</p></div>
+            <div class="feature-card"><div class="feature-icon">📸</div><h3>截图 OCR 翻译</h3><p>框选游戏画面任意区域，自动 OCR 识别文字并翻译，支持多语言识别，游戏内文字也能轻松看懂。</p></div>
+            <div class="feature-card"><div class="feature-icon">🎤</div><h3>PTT 语音翻译</h3><p>按住快捷键说话，松开自动翻译并朗读，支持翻译成中文或英文，和外国队友沟通无障碍。</p></div>
+            <div class="feature-card"><div class="feature-icon">📋</div><h3>剪贴板自动翻译</h3><p>复制文本自动翻译并朗读，字幕同步显示，一键开关，游戏外的文字也能快速翻译。</p></div>
+            <div class="feature-card"><div class="feature-icon">📝</div><h3>游戏词库修正</h3><p>内置 289 条 VALORANT 专业术语词库，支持编辑、删除、批量管理，翻译更准确，游戏术语不翻车。</p></div>
+            <div class="feature-card"><div class="feature-icon">🔒</div><h3>账号安全保障</h3><p>WASAPI 环回捕获系统音频，与游戏进程完全隔离，不修改游戏文件，不注入进程，不读取内存，安全可靠。</p></div>
+            <div class="feature-card"><div class="feature-icon">💻</div><h3>设备绑定保护</h3><p>一个账号同时只能一台设备登录，心跳机制实时检测，异常自动释放，账号安全有保障。</p></div>
+        </div>
+    </section>
+
+    <section class="download-section" id="download">
+        <div class="download-container">
+            <h2 class="section-title">立即下载，开始畅玩</h2>
+            <p class="section-subtitle">免费下载体验，支持微信扫码购买套餐</p>
+            <div class="download-card">
+                <div style="font-size:48px;margin-bottom:20px;">🎮</div>
+                <h3 style="font-size:28px;color:#fff;margin-bottom:10px;">游戏翻译助手 v2.5.5</h3>
+                <p style="color:#a0a0b0;margin-bottom:20px;">Windows 10 / Windows 11 · 64位</p>
+                <div class="download-info">
+                    <div class="download-info-item"><div class="label">文件大小</div><div class="value">约 380 MB</div></div>
+                    <div class="download-info-item"><div class="label">更新日期</div><div class="value">2026-08-22</div></div>
+                    <div class="download-info-item"><div class="label">系统要求</div><div class="value">Win10/11</div></div>
+                </div>
+                <a href="https://mirror.ghproxy.com/https://github.com/kzhou1765-hub/anzhuangbao/releases/download/v2.5.5/default.zip" class="btn-primary" style="margin-top:20px;">⬇️ 立即下载</a>
+                <p class="download-note">💡 下载后解压，运行「游戏翻译助手.exe」即可使用<br>首次使用需注册账号，支持微信扫码购买套餐<br>如遇下载速度慢，请复制链接到浏览器或使用下载工具</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <h2 class="section-title">联系我们</h2>
+        <p class="section-subtitle">遇到问题或有建议？欢迎随时联系</p>
+        <div class="contact-card">
+            <div class="contact-item"><span class="icon">💬</span><span class="label">微信客服：</span><span class="value">KAISXIAOKAI</span></div>
+            <div class="contact-item"><span class="icon">⏰</span><span class="label">工作时间：</span><span class="value">每日 9:00 - 22:00</span></div>
+            <div class="contact-item"><span class="icon">📨</span><span class="label">响应时间：</span><span class="value">24小时内尽快回复</span></div>
+            <p style="color:#888;font-size:14px;margin-top:20px;line-height:1.8;">反馈问题时请提供：软件版本号、问题描述（截图更佳）、操作系统版本、游戏名称</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2026 游戏翻译助手 · 保留所有权利<br>本软件仅为语言翻译辅助工具，不修改任何游戏文件<br>如因使用本软件导致账号被封，开发者概不负责</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
