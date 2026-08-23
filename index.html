@@ -6,173 +6,368 @@
     <title>游戏翻译助手 - 实时语音翻译 | 游戏必备神器</title>
     <meta name="description" content="游戏翻译助手是一款专业的游戏实时语音翻译工具，支持本地离线翻译、AI翻译、截图OCR翻译、PTT语音翻译，助你畅玩国际服游戏。">
     <style>
+        :root {
+            --bg: #05060f;
+            --bg-soft: #0a0c1c;
+            --card: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #e8eaf6;
+            --text-dim: #9aa0b5;
+            --text-faint: #5c6178;
+            --primary: #00e5c3;
+            --primary-2: #00b8d9;
+            --accent: #7c6cff;
+            --danger: #ff6b8a;
+            --radius: 18px;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: #0f0f1a; color: #e0e0e0; line-height: 1.6; overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden;
         }
+        /* ---------- 全局背景装饰 ---------- */
+        .bg-aurora {
+            position: fixed; inset: 0; z-index: -2; pointer-events: none;
+            background:
+                radial-gradient(600px 400px at 12% -5%, rgba(124, 108, 255, 0.16), transparent 65%),
+                radial-gradient(700px 480px at 88% 12%, rgba(0, 229, 195, 0.13), transparent 65%),
+                radial-gradient(900px 600px at 50% 110%, rgba(0, 184, 217, 0.10), transparent 70%);
+        }
+        .bg-grid {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 56px 56px;
+            mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 75%);
+        }
+        ::selection { background: rgba(0, 229, 195, 0.3); }
+
+        /* ---------- 导航栏 ---------- */
         .navbar {
-            position: fixed; top: 0; left: 0; right: 0;
-            background: rgba(15,15,26,0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,212,170,0.2); z-index: 1000; padding: 15px 0;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(5, 6, 15, 0.72); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06); transition: box-shadow 0.3s;
         }
-        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 22px; font-weight: bold; color: #00d4aa; display: flex; align-items: center; gap: 10px; }
-        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg,#00d4aa,#00b4d8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .nav-links { display: flex; gap: 30px; list-style: none; }
-        .nav-links a { color: #a0a0b0; text-decoration: none; font-size: 15px; transition: color 0.3s; }
-        .nav-links a:hover { color: #00d4aa; }
-        .nav-download-btn { background: linear-gradient(135deg,#00d4aa,#00b4d8); color: #0f0f1a !important; padding: 8px 20px; border-radius: 8px; font-weight: bold; transition: transform 0.3s,box-shadow 0.3s; }
-        .nav-download-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,212,170,0.4); }
-        .hero {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
-            text-align: center; padding: 120px 20px 80px; position: relative;
-            background: radial-gradient(ellipse at center, rgba(0,212,170,0.1) 0%, transparent 70%);
+        .navbar.scrolled { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
+        .nav-container { max-width: 1160px; margin: 0 auto; padding: 0 24px; height: 68px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 18px; letter-spacing: 0.5px; color: #fff; text-decoration: none; }
+        .logo-mark {
+            width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; font-size: 17px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            box-shadow: 0 6px 20px rgba(0, 229, 195, 0.35); color: #04121a;
         }
-        .hero-content { position: relative; z-index: 1; max-width: 800px; }
-        .hero-badge { display: inline-block; background: rgba(0,212,170,0.15); color: #00d4aa; padding: 6px 16px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; border: 1px solid rgba(0,212,170,0.3); }
-        .hero h1 { font-size: 56px; font-weight: bold; margin-bottom: 20px; background: linear-gradient(135deg,#ffffff 0%,#00d4aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-subtitle { font-size: 20px; color: #a0a0b0; margin-bottom: 40px; line-height: 1.8; }
-        .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-        .btn-primary { background: linear-gradient(135deg,#00d4aa,#00b4d8); color: #0f0f1a; padding: 16px 40px; border-radius: 12px; font-size: 18px; font-weight: bold; text-decoration: none; transition: transform 0.3s,box-shadow 0.3s; display: inline-flex; align-items: center; gap: 10px; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,212,170,0.4); }
-        .btn-secondary { background: transparent; color: #00d4aa; padding: 16px 40px; border-radius: 12px; font-size: 18px; font-weight: bold; text-decoration: none; border: 2px solid #00d4aa; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; }
-        .btn-secondary:hover { background: rgba(0,212,170,0.1); transform: translateY(-3px); }
-        .hero-version { margin-top: 30px; color: #606266; font-size: 14px; }
-        .features { padding: 100px 20px; max-width: 1200px; margin: 0 auto; }
-        .section-title { text-align: center; font-size: 36px; font-weight: bold; margin-bottom: 15px; color: #ffffff; }
-        .section-subtitle { text-align: center; color: #a0a0b0; font-size: 18px; margin-bottom: 60px; }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 30px; }
-        .feature-card { background: linear-gradient(135deg,rgba(26,26,46,0.8),rgba(22,33,62,0.8)); border: 1px solid rgba(0,212,170,0.15); border-radius: 16px; padding: 35px; transition: transform 0.3s,border-color 0.3s,box-shadow 0.3s; }
-        .feature-card:hover { transform: translateY(-5px); border-color: rgba(0,212,170,0.5); box-shadow: 0 10px 40px rgba(0,212,170,0.15); }
-        .feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg,rgba(0,212,170,0.2),rgba(0,180,216,0.2)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
-        .feature-card h3 { font-size: 22px; color: #ffffff; margin-bottom: 12px; }
-        .feature-card p { color: #a0a0b0; font-size: 15px; line-height: 1.7; }
-        .download-section { padding: 100px 20px; background: linear-gradient(180deg,transparent,rgba(0,212,170,0.05),transparent); }
-        .download-container { max-width: 800px; margin: 0 auto; text-align: center; }
-        .download-card { background: linear-gradient(135deg,rgba(26,26,46,0.9),rgba(22,33,62,0.9)); border: 1px solid rgba(0,212,170,0.3); border-radius: 20px; padding: 50px; margin-top: 40px; }
-        .download-info { display: flex; justify-content: center; gap: 40px; margin: 30px 0; flex-wrap: wrap; }
-        .download-info-item { text-align: center; }
-        .download-info-item .label { color: #606266; font-size: 14px; margin-bottom: 5px; }
-        .download-info-item .value { color: #00d4aa; font-size: 18px; font-weight: bold; }
-        .download-note { color: #888; font-size: 14px; margin-top: 25px; line-height: 1.8; }
-        .pricing-section { padding: 100px 20px; max-width: 1200px; margin: 0 auto; }
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 20px; margin-top: 40px; }
-        .pricing-card { background: linear-gradient(135deg,rgba(26,26,46,0.9),rgba(22,33,62,0.9)); border: 1px solid rgba(0,212,170,0.2); border-radius: 16px; padding: 30px 20px; text-align: center; transition: transform 0.3s,border-color 0.3s,box-shadow 0.3s; position: relative; }
-        .pricing-card:hover { transform: translateY(-5px); border-color: rgba(0,212,170,0.5); box-shadow: 0 10px 30px rgba(0,212,170,0.15); }
-        .pricing-card.recommended { border-color: #00d4aa; box-shadow: 0 0 30px rgba(0,212,170,0.2); }
-        .pricing-card.recommended::before { content: '推荐'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#00d4aa,#00b4d8); color: #0f0f1a; padding: 4px 16px; border-radius: 12px; font-size: 12px; font-weight: bold; }
-        .pricing-name { font-size: 20px; color: #fff; font-weight: bold; margin-bottom: 10px; }
-        .pricing-price { font-size: 36px; color: #00d4aa; font-weight: bold; margin-bottom: 5px; }
-        .pricing-price span { font-size: 16px; color: #888; }
-        .pricing-desc { color: #a0a0b0; font-size: 14px; margin-bottom: 20px; }
-        .pricing-duration { color: #606266; font-size: 13px; }
-        .purchase-note { text-align: center; margin-top: 40px; color: #888; font-size: 15px; line-height: 1.8; }
-        .purchase-note strong { color: #00d4aa; }
-        .qr-code-img { width: 200px; height: 200px; border-radius: 12px; margin: 20px auto; display: block; border: 3px solid rgba(0,212,170,0.3); }
-        .contact-section { padding: 80px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
-        .contact-card { background: linear-gradient(135deg,rgba(26,26,46,0.8),rgba(22,33,62,0.8)); border: 1px solid rgba(0,212,170,0.2); border-radius: 16px; padding: 40px; margin-top: 30px; }
-        .contact-item { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 15px 0; font-size: 18px; }
-        .contact-item .icon { font-size: 24px; }
-        .contact-item .label { color: #a0a0b0; }
-        .contact-item .value { color: #00d4aa; font-weight: bold; }
-        .footer { background: #0a0a14; padding: 40px 20px; text-align: center; border-top: 1px solid rgba(0,212,170,0.1); }
-        .footer p { color: #606266; font-size: 14px; line-height: 1.8; }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 36px; }
-            .hero-subtitle { font-size: 16px; }
-            .nav-links { display: none; }
-            .section-title { font-size: 28px; }
-            .download-card { padding: 30px 20px; }
-            .download-info { gap: 20px; }
+        .nav-links { display: flex; align-items: center; gap: 34px; list-style: none; }
+        .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 14.5px; font-weight: 500; transition: color 0.25s; }
+        .nav-links a:hover { color: var(--primary); }
+        .btn-nav {
+            background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #04121a !important;
+            padding: 9px 22px; border-radius: 10px; font-weight: 700; font-size: 14px;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .btn-nav:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(0, 229, 195, 0.35); color: #04121a !important; }
+        .nav-toggle { display: none; background: none; border: 1px solid rgba(255,255,255,0.15); color: var(--text); font-size: 18px; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; }
+
+        /* ---------- Hero ---------- */
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 140px 24px 90px; }
+        .hero-inner { max-width: 860px; position: relative; z-index: 1; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px; padding: 7px 18px; border-radius: 100px; font-size: 13px; font-weight: 600;
+            color: var(--primary); background: rgba(0, 229, 195, 0.08); border: 1px solid rgba(0, 229, 195, 0.25); margin-bottom: 28px;
+        }
+        .hero h1 {
+            font-size: clamp(40px, 7vw, 72px); font-weight: 900; line-height: 1.12; letter-spacing: 1px; margin-bottom: 22px;
+            background: linear-gradient(120deg, #ffffff 20%, #9be8dc 55%, var(--primary) 90%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle { font-size: clamp(15px, 2.2vw, 19px); color: var(--text-dim); line-height: 1.9; margin-bottom: 44px; }
+        .hero-subtitle strong { color: var(--text); font-weight: 600; }
+        .hero-buttons { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 10px; padding: 15px 36px; border-radius: 14px; font-size: 16px; font-weight: 700; text-decoration: none; transition: all 0.25s; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #04121a; box-shadow: 0 12px 34px rgba(0, 229, 195, 0.28); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgba(0, 229, 195, 0.4); }
+        .btn-ghost { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid rgba(255,255,255,0.16); backdrop-filter: blur(6px); }
+        .btn-ghost:hover { border-color: rgba(0, 229, 195, 0.5); color: var(--primary); transform: translateY(-3px); }
+        .hero-meta { margin-top: 34px; display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; }
+        .version-chip {
+            padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 600; color: var(--text-dim);
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+        }
+        .version-chip b { color: var(--primary); font-weight: 700; }
+        .scroll-hint { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); color: var(--text-faint); font-size: 12px; letter-spacing: 2px; animation: float 2.4s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+
+        /* ---------- 能力链路 ---------- */
+        .pipeline { max-width: 1160px; margin: 0 auto; padding: 60px 24px; }
+        .pipeline-track {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            padding: 26px; border-radius: var(--radius);
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            border: 1px solid var(--card-border); backdrop-filter: blur(10px);
+        }
+        .pipeline-step { text-align: center; position: relative; }
+        .pipeline-step + .pipeline-step::before {
+            content: ''; position: absolute; left: -10px; top: 30px; width: 20px; height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent); opacity: 0.55;
+        }
+        .pipeline-ico { width: 60px; height: 60px; margin: 0 auto 12px; border-radius: 16px; display: grid; place-items: center; font-size: 26px; background: rgba(0, 229, 195, 0.09); border: 1px solid rgba(0, 229, 195, 0.18); }
+        .pipeline-step h4 { font-size: 15px; color: #fff; margin-bottom: 4px; }
+        .pipeline-step p { font-size: 12.5px; color: var(--text-faint); }
+
+        /* ---------- 通用区块 ---------- */
+        .section { max-width: 1160px; margin: 0 auto; padding: 96px 24px; }
+        .section-head { text-align: center; margin-bottom: 56px; }
+        .section-tag { display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: 2.5px; color: var(--primary); text-transform: uppercase; margin-bottom: 14px; }
+        .section-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; letter-spacing: 0.5px; color: #fff; margin-bottom: 14px; }
+        .section-subtitle { color: var(--text-dim); font-size: 16px; }
+
+        /* ---------- 功能卡片 ---------- */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+        .feature-card {
+            position: relative; padding: 34px 30px; border-radius: var(--radius); overflow: hidden;
+            background: linear-gradient(160deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015));
+            border: 1px solid var(--card-border);
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.35s; pointer-events: none;
+            background: radial-gradient(340px 200px at 30% 0%, rgba(0, 229, 195, 0.12), transparent 70%);
+        }
+        .feature-card:hover { transform: translateY(-6px); border-color: rgba(0, 229, 195, 0.35); box-shadow: var(--shadow); }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-ico {
+            width: 58px; height: 58px; border-radius: 15px; display: grid; place-items: center; font-size: 26px; margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(0,229,195,0.16), rgba(124,108,255,0.14));
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .feature-card h3 { font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .feature-card p { font-size: 14px; color: var(--text-dim); line-height: 1.85; }
+
+        /* ---------- 下载区 ---------- */
+        .download-section { padding: 110px 24px; position: relative; }
+        .download-section::before {
+            content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+            background: radial-gradient(700px 300px at 50% 0%, rgba(0, 229, 195, 0.07), transparent 70%);
+        }
+        .download-wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 26px; }
+        .download-card {
+            padding: 46px 42px; border-radius: 22px; text-align: center;
+            background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+            border: 1px solid rgba(0, 229, 195, 0.22); backdrop-filter: blur(12px); position: relative; overflow: hidden;
+        }
+        .download-card::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: radial-gradient(420px 180px at 50% -10%, rgba(0, 229, 195, 0.13), transparent 70%);
+        }
+        .download-card.patch { border-color: rgba(124, 108, 255, 0.25); }
+        .download-card.patch::before { background: radial-gradient(420px 180px at 50% -10%, rgba(124, 108, 255, 0.13), transparent 70%); }
+        .download-head { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
+        .download-head .ico { font-size: 34px; }
+        .download-card h3 { font-size: 24px; font-weight: 800; color: #fff; }
+        .download-card.patch h3 { color: var(--primary); font-size: 20px; }
+        .download-sub { color: var(--text-dim); font-size: 13.5px; margin-bottom: 24px; }
+        .download-info { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 26px; }
+        .dinfo {
+            min-width: 108px; padding: 12px 16px; border-radius: 13px; text-align: center;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+        }
+        .dinfo .label { font-size: 12px; color: var(--text-faint); margin-bottom: 3px; }
+        .dinfo .value { font-size: 15px; font-weight: 700; color: var(--primary); }
+        .download-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .btn-sm { padding: 11px 24px; font-size: 14px; border-radius: 11px; }
+        .download-note { margin-top: 22px; color: var(--text-faint); font-size: 13px; line-height: 1.9; }
+        .download-note b { color: var(--primary); }
+
+        /* ---------- 价格 ---------- */
+        .pricing-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .pricing-card {
+            position: relative; padding: 34px 18px 30px; text-align: center; border-radius: var(--radius);
+            background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+            border: 1px solid var(--card-border); transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .pricing-card:hover { transform: translateY(-6px); border-color: rgba(0, 229, 195, 0.35); box-shadow: var(--shadow); }
+        .pricing-card.recommended { border-color: rgba(0, 229, 195, 0.55); box-shadow: 0 0 40px rgba(0, 229, 195, 0.12); background: linear-gradient(160deg, rgba(0,229,195,0.09), rgba(255,255,255,0.015)); }
+        .pricing-card.recommended::before {
+            content: '推荐'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #04121a;
+            padding: 4px 16px; border-radius: 100px; font-size: 12px; font-weight: 800;
+        }
+        .pricing-name { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .pricing-price { font-size: 34px; font-weight: 900; color: var(--primary); margin-bottom: 4px; }
+        .pricing-price span { font-size: 14px; font-weight: 500; color: var(--text-faint); }
+        .pricing-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; }
+        .pricing-duration { font-size: 12px; color: var(--text-faint); }
+        .purchase-note { text-align: center; margin-top: 44px; color: var(--text-dim); font-size: 14.5px; line-height: 2; }
+        .purchase-note strong { color: var(--primary); }
+
+        /* ---------- 联系 ---------- */
+        .contact-card {
+            max-width: 620px; margin: 0 auto; text-align: center; padding: 44px 40px; border-radius: 22px;
+            background: linear-gradient(160deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015));
+            border: 1px solid var(--card-border); backdrop-filter: blur(12px);
+        }
+        .qr-code-img { width: 176px; height: 176px; border-radius: 16px; margin: 0 auto 20px; display: block; border: 3px solid rgba(0, 229, 195, 0.3); box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4); }
+        .contact-line { color: var(--primary); font-size: 15px; font-weight: 700; margin-bottom: 22px; }
+        .contact-items { display: grid; gap: 12px; max-width: 400px; margin: 0 auto; }
+        .contact-item { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; }
+        .contact-item .label { color: var(--text-dim); }
+        .contact-item .value { color: #fff; font-weight: 700; }
+        .contact-tip { margin-top: 22px; color: var(--text-faint); font-size: 13px; line-height: 1.9; }
+
+        /* ---------- 页脚 ---------- */
+        .footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 40px 24px; text-align: center; background: rgba(0,0,0,0.25); }
+        .footer p { color: var(--text-faint); font-size: 13px; line-height: 2; }
+
+        /* ---------- 响应式 ---------- */
+        @media (max-width: 1024px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+            .pipeline-track { grid-template-columns: repeat(2, 1fr); }
+            .pipeline-step + .pipeline-step::before { display: none; }
+        }
+        @media (max-width: 720px) {
+            .nav-links { display: none; position: absolute; top: 68px; left: 0; right: 0; flex-direction: column; gap: 0; background: rgba(5,6,15,0.97); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 24px 18px; }
+            .nav-links.open { display: flex; }
+            .nav-links li { width: 100%; }
+            .nav-links a { display: block; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .nav-toggle { display: block; }
+            .features-grid { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+            .download-card { padding: 34px 20px; }
+            .hero { padding-top: 120px; }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
+    <div class="bg-aurora"></div>
+    <div class="bg-grid"></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="logo"><div class="logo-icon">🎮</div><span>游戏翻译助手</span></div>
-            <ul class="nav-links">
+            <a class="logo" href="#"><div class="logo-mark">译</div><span>游戏翻译助手</span></a>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="#features">功能特色</a></li>
                 <li><a href="#pricing">价格套餐</a></li>
                 <li><a href="#download">立即下载</a></li>
                 <li><a href="#contact">联系我们</a></li>
-                <li><a href="#download" class="nav-download-btn">下载</a></li>
+                <li><a href="#download" class="btn-nav">下载</a></li>
             </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
         </div>
     </nav>
 
+    <!-- Hero -->
     <section class="hero">
-        <div class="hero-content">
+        <div class="hero-inner">
             <div class="hero-badge">🔥 畅玩国际服必备神器</div>
             <h1>游戏翻译助手</h1>
-            <p class="hero-subtitle">专业的游戏实时语音翻译工具<br>支持本地离线翻译、AI翻译、截图OCR翻译、PTT语音翻译<br>隐私安全，不上传音频，助你畅玩 VALORANT、CS2、APEX 等国际服游戏</p>
+            <p class="hero-subtitle">
+                专业的游戏实时语音翻译工具<br>
+                支持<strong>本地离线翻译</strong>、<strong>AI 翻译</strong>、<strong>截图 OCR 翻译</strong>、<strong>PTT 语音翻译</strong><br>
+                隐私安全，不上传音频，助你畅玩 VALORANT、CS2、APEX 等国际服游戏
+            </p>
             <div class="hero-buttons">
-                <a href="#download" class="btn-primary">⬇️ 立即下载</a>
-                <a href="#features" class="btn-secondary">了解更多</a>
+                <a href="#download" class="btn btn-primary">⬇ 立即下载</a>
+                <a href="#features" class="btn btn-ghost">了解更多</a>
             </div>
-            <p class="hero-version">当前版本 v2.5.12 · Windows 10/11</p>
+            <div class="hero-meta">
+                <span class="version-chip">当前版本 <b>v2.5.14</b></span>
+                <span class="version-chip">Windows 10 / 11</span>
+                <span class="version-chip">64 位</span>
+            </div>
+        </div>
+        <div class="scroll-hint">向下滚动</div>
+    </section>
+
+    <!-- 能力链路 -->
+    <section class="pipeline">
+        <div class="pipeline-track">
+            <div class="pipeline-step"><div class="pipeline-ico">🎙️</div><h4>语音捕获</h4><p>WASAPI 环回 + VAD 检测</p></div>
+            <div class="pipeline-step"><div class="pipeline-ico">🧠</div><h4>智能识别</h4><p>faster-whisper 语音识别</p></div>
+            <div class="pipeline-step"><div class="pipeline-ico">🌐</div><h4>多引擎翻译</h4><p>本地 / AI 双通道翻译</p></div>
+            <div class="pipeline-step"><div class="pipeline-ico">💬</div><h4>实时呈现</h4><p>悬浮字幕 + TTS 朗读</p></div>
         </div>
     </section>
 
-    <section class="features" id="features">
-        <h2 class="section-title">强大功能，应有尽有</h2>
-        <p class="section-subtitle">专为游戏玩家打造的翻译工具，覆盖所有翻译场景</p>
+    <!-- 功能特色 -->
+    <section class="section" id="features">
+        <div class="section-head">
+            <div class="section-tag">Features</div>
+            <h2 class="section-title">强大功能，应有尽有</h2>
+            <p class="section-subtitle">专为游戏玩家打造的翻译工具，覆盖所有翻译场景</p>
+        </div>
         <div class="features-grid">
-            <div class="feature-card"><div class="feature-icon">🎙️</div><h3>实时语音翻译</h3><p>WASAPI 环回音频捕获，VAD 语音检测优化，自动识别游戏内语音并实时翻译，字幕悬浮显示，不影响游戏操作。</p></div>
-            <div class="feature-card"><div class="feature-icon">🔤</div><h3>本地离线翻译</h3><p>支持 OPUS-MT、M2M100、NLLB、Qwen2 等多种本地模型，无需联网即可翻译，隐私安全，速度快，CPU 友好。</p></div>
-            <div class="feature-card"><div class="feature-icon">🤖</div><h3>AI 翻译引擎</h3><p>支持通义千问、豆包、文心一言等主流 AI 翻译引擎，翻译质量更高，支持自定义 API Key，灵活切换。</p></div>
-            <div class="feature-card"><div class="feature-icon">📸</div><h3>截图 OCR 翻译</h3><p>框选游戏画面任意区域，自动 OCR 识别文字并翻译，支持多语言识别，游戏内文字也能轻松看懂。</p></div>
-            <div class="feature-card"><div class="feature-icon">🎤</div><h3>PTT 语音翻译</h3><p>按住快捷键说话，松开自动翻译并朗读，支持翻译成中文或英文，和外国队友沟通无障碍。</p></div>
-            <div class="feature-card"><div class="feature-icon">📋</div><h3>剪贴板自动翻译</h3><p>复制文本自动翻译并朗读，字幕同步显示，一键开关，游戏外的文字也能快速翻译。</p></div>
-            <div class="feature-card"><div class="feature-icon">📝</div><h3>游戏词库修正</h3><p>内置 289 条 VALORANT 专业术语词库，支持编辑、删除、批量管理，翻译更准确，游戏术语不翻车。</p></div>
-            <div class="feature-card"><div class="feature-icon">🔒</div><h3>账号安全保障</h3><p>WASAPI 环回捕获系统音频，与游戏进程完全隔离，不修改游戏文件，不注入进程，不读取内存，安全可靠。</p></div>
-            <div class="feature-card"><div class="feature-icon">💻</div><h3>设备绑定保护</h3><p>一个账号同时只能一台设备登录，心跳机制实时检测，异常自动释放，账号安全有保障。</p></div>
+            <div class="feature-card"><div class="feature-ico">🎙️</div><h3>实时语音翻译</h3><p>WASAPI 环回音频捕获，VAD 语音检测优化，自动识别游戏内语音并实时翻译，字幕悬浮显示，不影响游戏操作。</p></div>
+            <div class="feature-card"><div class="feature-ico">🔤</div><h3>本地离线翻译</h3><p>支持 OPUS-MT、M2M100、NLLB、Qwen2 等多种本地模型，无需联网即可翻译，隐私安全，速度快，CPU 友好。</p></div>
+            <div class="feature-card"><div class="feature-ico">🤖</div><h3>AI 翻译引擎</h3><p>支持通义千问、豆包、文心一言等主流 AI 翻译引擎，翻译质量更高，支持自定义 API Key，灵活切换。</p></div>
+            <div class="feature-card"><div class="feature-ico">📸</div><h3>截图 OCR 翻译</h3><p>框选游戏画面任意区域，自动 OCR 识别文字并翻译，支持多语言识别，游戏内文字也能轻松看懂。</p></div>
+            <div class="feature-card"><div class="feature-ico">🎤</div><h3>PTT 语音翻译</h3><p>按住快捷键说话，松开自动翻译并朗读，支持翻译成中文或英文，和外国队友沟通无障碍。</p></div>
+            <div class="feature-card"><div class="feature-ico">📋</div><h3>剪贴板自动翻译</h3><p>复制文本自动翻译并朗读，字幕同步显示，一键开关，游戏外的文字也能快速翻译。</p></div>
+            <div class="feature-card"><div class="feature-ico">📝</div><h3>游戏词库修正</h3><p>内置 289 条 VALORANT 专业术语词库，支持编辑、删除、批量管理，翻译更准确，游戏术语不翻车。</p></div>
+            <div class="feature-card"><div class="feature-ico">🔒</div><h3>账号安全保障</h3><p>WASAPI 环回捕获系统音频，与游戏进程完全隔离，不修改游戏文件，不注入进程，不读取内存，安全可靠。</p></div>
+            <div class="feature-card"><div class="feature-ico">💻</div><h3>设备绑定保护</h3><p>一个账号同时只能一台设备登录，心跳机制实时检测，异常自动释放，账号安全有保障。</p></div>
         </div>
     </section>
 
+    <!-- 下载区 -->
     <section class="download-section" id="download">
-        <div class="download-container">
+        <div class="section-head">
+            <div class="section-tag">Download</div>
             <h2 class="section-title">立即下载，开始畅玩</h2>
             <p class="section-subtitle">免费下载体验，支持微信扫码购买套餐</p>
+        </div>
+        <div class="download-wrap">
+            <!-- 完整安装包 -->
             <div class="download-card">
-                <div style="font-size:48px;margin-bottom:20px;">🎮</div>
-                <h3 style="font-size:28px;color:#fff;margin-bottom:10px;">游戏翻译助手 v2.5.12</h3>
-                <p style="color:#a0a0b0;margin-bottom:20px;">Windows 10 / Windows 11 · 64位</p>
+                <div class="download-head"><span class="ico">🎮</span><h3>游戏翻译助手 v2.5.14</h3></div>
+                <p class="download-sub">Windows 10 / Windows 11 · 64 位</p>
                 <div class="download-info">
-                    <div class="download-info-item"><div class="label">文件大小</div><div class="value">约 380 MB</div></div>
-                    <div class="download-info-item"><div class="label">更新日期</div><div class="value">2026-08-22</div></div>
-                    <div class="download-info-item"><div class="label">系统要求</div><div class="value">Win10/11</div></div>
+                    <div class="dinfo"><div class="label">文件大小</div><div class="value">约 380 MB</div></div>
+                    <div class="dinfo"><div class="label">更新日期</div><div class="value">2026-08-23</div></div>
+                    <div class="dinfo"><div class="label">系统要求</div><div class="value">Win10 / 11</div></div>
                 </div>
-                <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
-                    <a href="https://1846516244.share.123pan.cn/123pan/h4ZyTd-Trqth" target="_blank" class="btn-primary">☁️ 123网盘下载</a>
-                    <a href="https://pan.baidu.com/s/1JHEp9ynNAMeCsH0MrIXDoQ?pwd=1234" target="_blank" class="btn-secondary">🔵 百度网盘下载</a>
+                <div class="download-actions">
+                    <a href="https://1846516244.share.123pan.cn/123pan/h4ZyTd-Trqth" target="_blank" class="btn btn-primary btn-sm">☁ 123网盘下载</a>
+                    <a href="https://pan.baidu.com/s/1JHEp9ynNAMeCsH0MrIXDoQ?pwd=1234" target="_blank" class="btn btn-ghost btn-sm">🔵 百度网盘下载</a>
                 </div>
-                <p class="download-note">💡 123网盘免费不限速，百度网盘提取码：<strong style="color:#00d4aa;">1234</strong><br>下载后解压，运行「游戏翻译助手.exe」即可使用<br>首次使用需注册账号，支持微信扫码购买套餐</p>
+                <p class="download-note">
+                    💡 123网盘免费不限速，百度网盘提取码：<b>1234</b><br>
+                    下载后解压，运行「游戏翻译助手.exe」即可使用<br>
+                    首次使用需注册账号，支持微信扫码购买套餐
+                </p>
             </div>
-
-            <!-- 增量补丁包下载 -->
-            <div class="download-card" style="margin-top:30px;background:linear-gradient(135deg, rgba(0,212,170,0.08), rgba(0,212,170,0.02));">
-                <div style="font-size:36px;margin-bottom:10px;">🔧</div>
-                <h3 style="font-size:22px;color:#00d4aa;margin-bottom:8px;">增量补丁包（已安装用户专用）</h3>
-                <p style="color:#a0a0b0;margin-bottom:15px;font-size:13px;">仅几MB，下载后覆盖到软件安装目录即可，无需重新下载完整包</p>
-                <div class="download-info" style="max-width:400px;margin:0 auto 15px;">
-                    <div class="download-info-item"><div class="label">适用版本</div><div class="value">v2.5.12 及以上</div></div>
-                    <div class="download-info-item"><div class="label">补丁大小</div><div class="value">约 1-10 MB</div></div>
-                    <div class="download-info-item"><div class="label">更新方式</div><div class="value">覆盖安装</div></div>
+            <!-- 增量补丁包 -->
+            <div class="download-card patch">
+                <div class="download-head"><span class="ico">🔧</span><h3>增量补丁包</h3></div>
+                <p class="download-sub">已安装用户专用 · 仅几 MB，覆盖到安装目录即可，无需重新下载完整包</p>
+                <div class="download-info">
+                    <div class="dinfo"><div class="label">适用版本</div><div class="value">v2.5.14 及以上</div></div>
+                    <div class="dinfo"><div class="label">补丁大小</div><div class="value">约 1-10 MB</div></div>
+                    <div class="dinfo"><div class="label">更新方式</div><div class="value">覆盖安装</div></div>
                 </div>
-                <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
-                    <a href="https://1846516244.share.123pan.cn/123pan/h4ZyTd-IvKth" target="_blank" class="btn-primary" style="padding:10px 24px;font-size:14px;">☁️ 123网盘补丁</a>
-                    <a href="https://pan.baidu.com/s/1q6m5eyR8m4nD_54ZFBzU8Q?pwd=1234" target="_blank" class="btn-secondary" style="padding:10px 24px;font-size:14px;">🔵 百度网盘补丁</a>
+                <div class="download-actions">
+                    <a href="https://1846516244.share.123pan.cn/123pan/h4ZyTd-IvKth" target="_blank" class="btn btn-primary btn-sm">☁ 123网盘补丁</a>
+                    <a href="https://pan.baidu.com/s/1q6m5eyR8m4nD_54ZFBzU8Q?pwd=1234" target="_blank" class="btn btn-ghost btn-sm">🔵 百度网盘补丁</a>
                 </div>
-                <p class="download-note" style="margin-top:15px;">💡 补丁包提取码：<strong style="color:#00d4aa;">1234</strong><br>使用方法：关闭软件 → 解压补丁包 → 将所有文件复制到软件安装目录 → 选择「替换目标中的文件」→ 重新启动软件</p>
+                <p class="download-note">
+                    💡 补丁包提取码：<b>1234</b><br>
+                    使用方法：关闭软件 → 解压补丁包 → 将所有文件复制到软件安装目录 → 选择「替换目标中的文件」→ 重新启动软件
+                </p>
             </div>
         </div>
     </section>
 
-    <section class="pricing-section" id="pricing">
-        <h2 class="section-title">套餐价格</h2>
-        <p class="section-subtitle">灵活选择，按需购买，微信扫码付款后联系客服发卡密</p>
+    <!-- 价格套餐 -->
+    <section class="section" id="pricing">
+        <div class="section-head">
+            <div class="section-tag">Pricing</div>
+            <h2 class="section-title">套餐价格</h2>
+            <p class="section-subtitle">灵活选择，按需购买，微信扫码付款后联系客服发卡密</p>
+        </div>
         <div class="pricing-grid">
             <div class="pricing-card">
                 <div class="pricing-name">日卡</div>
@@ -207,33 +402,60 @@
         </div>
         <div class="purchase-note">
             <p>💡 <strong>购买方式：</strong>微信扫码付款 → 联系客服微信 KAISXIAOKAI → 客服发送卡密 → 软件内兑换激活</p>
-            <p style="margin-top:10px;">付款时请备注您的账号名，方便客服快速发卡</p>
+            <p>付款时请备注您的账号名，方便客服快速发卡</p>
         </div>
     </section>
 
-    <section class="contact-section" id="contact">
-        <h2 class="section-title">联系我们 & 购买</h2>
-        <p class="section-subtitle">扫码付款或添加微信客服，24小时内回复</p>
+    <!-- 联系我们 & 购买 -->
+    <section class="section" id="contact">
+        <div class="section-head">
+            <div class="section-tag">Contact</div>
+            <h2 class="section-title">联系我们 & 购买</h2>
+            <p class="section-subtitle">扫码付款或添加微信客服，24小时内回复</p>
+        </div>
         <div class="contact-card">
             <img src="https://aka.doubaocdn.com/s/7qBo8qGyYb" alt="微信收款二维码" class="qr-code-img">
-            <p style="color:#00d4aa;font-size:16px;font-weight:bold;margin-bottom:20px;">微信扫码付款</p>
-            <div class="contact-item"><span class="icon">💬</span><span class="label">微信客服：</span><span class="value">KAISXIAOKAI</span></div>
-            <div class="contact-item"><span class="icon">⏰</span><span class="label">工作时间：</span><span class="value">每日 9:00 - 22:00</span></div>
-            <div class="contact-item"><span class="icon">📨</span><span class="label">响应时间：</span><span class="value">24小时内尽快回复</span></div>
-            <p style="color:#888;font-size:14px;margin-top:20px;line-height:1.8;">付款后请添加微信客服并备注您的账号名，客服将尽快发送卡密<br>反馈问题时请提供：软件版本号、问题描述（截图更佳）、操作系统版本、游戏名称</p>
+            <div class="contact-line">微信扫码付款</div>
+            <div class="contact-items">
+                <div class="contact-item"><span>💬</span><span class="label">微信客服：</span><span class="value">KAISXIAOKAI</span></div>
+                <div class="contact-item"><span>⏰</span><span class="label">工作时间：</span><span class="value">每日 9:00 - 22:00</span></div>
+                <div class="contact-item"><span>📨</span><span class="label">响应时间：</span><span class="value">24小时内尽快回复</span></div>
+            </div>
+            <p class="contact-tip">
+                付款后请添加微信客服并备注您的账号名，客服将尽快发送卡密<br>
+                反馈问题时请提供：软件版本号、问题描述（截图更佳）、操作系统版本、游戏名称
+            </p>
         </div>
     </section>
 
+    <!-- 页脚 -->
     <footer class="footer">
-        <p>© 2026 游戏翻译助手 · 保留所有权利<br>本软件仅为语言翻译辅助工具，不修改任何游戏文件<br>如因使用本软件导致账号被封，开发者概不负责</p>
+        <p>
+            © 2026 游戏翻译助手 · 保留所有权利<br>
+            本软件仅为语言翻译辅助工具，不修改任何游戏文件<br>
+            如因使用本软件导致账号被封，开发者概不负责
+        </p>
     </footer>
 
     <script>
+        // 导航栏滚动阴影
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 10);
+        });
+        // 移动端菜单
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+        navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+        // 平滑锚点滚动
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
         });
     </script>
